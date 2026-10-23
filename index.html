@@ -62,10 +62,9 @@ const EPISODES = [
       const number = document.createElement("span"); number.className = "num";
       const match = e.title.match(/(?:episode|ep|e)?\s*0*(\d+)/i);
       number.textContent = match ? String(Number(match[1])).padStart(2,"0") : String(visible.indexOf(e)+1).padStart(2,"0");
-      const info = document.createElement("span"), name = document.createElement("span"), file = document.createElement("span");
+      const info = document.createElement("span"), name = document.createElement("span");
       name.className = "name"; name.textContent = e.title;
-      file.className = "file"; file.textContent = e.trailer ? "SEASON TRAILER · YOUTUBE" : "YOUTUBE";
-      info.append(name,file);
+      info.append(name);
       const arrow = document.createElement("span"); arrow.className = "arrow"; arrow.textContent = index === current ? "▶" : "›";
       button.append(number,info,arrow); button.addEventListener("click",()=>play(index)); list.append(button);
     });
