@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10091b">
+<title>The Cousins — Private Screening Room</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0710;
+  --panel: #171020;
+  --panel2: #21152e;
+  --line: #3c2852;
+  --purple: #a66bff;
+  --purple2: #7541c8;
+  --text: #f5efff;
+  --muted: #b9a9cc;
+  --danger: #ff9292;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh;
+  background: radial-gradient(ellipse at top, #241336 0, var(--bg) 55%);
+  color: var(--text); font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+.wrap { width: min(1050px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 54px; }
+header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:28px; }
+.brand { font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:850; letter-spacing:-.04em; }
+.brand span { color:var(--purple); }
+.tag { color:var(--muted); font-size:.9rem; }
+.panel { background:linear-gradient(145deg, rgba(33,21,46,.97), rgba(17,11,25,.98)); border:1px solid var(--line); border-radius:20px; padding:clamp(20px, 4vw, 34px); box-shadow:0 18px 60px #0005; }
+#gate { max-width:500px; margin:9vh auto 0; text-align:center; }
+h1 { margin:0 0 8px; font-size:clamp(1.7rem, 5vw, 2.5rem); letter-spacing:-.035em; }
+p { color:var(--muted); }
+.field { display:flex; gap:10px; margin-top:24px; }
+input { min-width:0; flex:1; border:1px solid var(--line); border-radius:11px; background:#0d0813; color:var(--text); padding:13px 14px; outline:none; }
+input:focus { border-color:var(--purple); box-shadow:0 0 0 3px #a66bff25; }
+.btn { border:1px solid transparent; border-radius:11px; padding:12px 16px; background:var(--purple2); color:white; font-weight:700; transition:filter .15s, transform .15s; }
+.btn:hover { filter:brightness(1.15); }
+.btn:active { transform:translateY(1px); }
+.btn.secondary { background:#21152e; border-color:var(--line); }
+.error { min-height:1.5em; color:var(--danger); font-size:.92rem; margin:10px 0 0; }
+.smallnote { font-size:.82rem; margin-top:22px; }
+#library { display:none; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px; }
+.toolbar h1 { margin:0; }
+.library-note { margin:5px 0 0; font-size:.92rem; }
+.controls { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+.search { width:min(280px, 100%); }
+.tabs { display:flex; gap:8px; margin:20px 0; }
+.tab { padding:9px 16px; border-radius:10px; border:1px solid var(--line); color:var(--muted); background:#130c1c; }
+.tab.active { color:white; border-color:var(--purple); background:#35204d; }
+.layout { display:grid; grid-template-columns:minmax(0, 1.35fr) minmax(250px, .8fr); gap:20px; align-items:start; }
+.playerbox { overflow:hidden; border-radius:14px; border:1px solid var(--line); background:#050307; }
+.playerbox iframe { display:block; width:100%; aspect-ratio:16/9; border:0; }
+.player-placeholder { aspect-ratio:16/9; display:grid; place-items:center; color:var(--muted); padding:20px; text-align:center; }
+.episode-info { padding:18px 2px 0; }
+.eyebrow { color:var(--purple); font-size:.82rem; text-transform:uppercase; font-weight:800; letter-spacing:.09em; }
+.episode-info h2 { margin:4px 0 8px; font-size:1.55rem; }
+.episode-info p { margin:0; }
+.player-actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:18px; }
+.list { display:grid; gap:9px; }
+.episode { width:100%; text-align:left; border:1px solid var(--line); border-radius:12px; background:#130c1c; color:var(--text); padding:13px 14px; }
+.episode:hover { border-color:#8960b6; }
+.episode.selected { border-color:var(--purple); background:#2b1b3d; }
+.ep-code { color:var(--purple); font-weight:800; font-size:.78rem; }
+.ep-title { display:block; font-weight:750; margin-top:2px; }
+.empty { color:var(--muted); padding:18px 4px; }
+footer { color:#8f7da4; font-size:.82rem; text-align:center; margin-top:30px; }
+@media (max-width:760px) {
+  .layout { grid-template-columns:1fr; }
+  header { align-items:flex-start; flex-direction:column; }
+  .field { flex-direction:column; }
+  .field .btn { width:100%; }
+  .toolbar { align-items:stretch; }
+  .controls { width:100%; }
+  .search { flex:1; width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">THE <span>COUSINS</span></div>
+    <div class="tag">Private screening room</div>
+  </header>
+
+  <main>
+    <section id="gate" class="panel">
+      <h1>Private access</h1>
+      <p>A private screening room featuring unreleased episodes of <em>The Cousins</em> before they premiere publicly.</p>
+      <form id="gateForm" class="field">
+        <input id="codeInput" type="password" placeholder="Access code" aria-label="Access code" autocomplete="off" autofocus>
+        <button class="btn" type="submit">Unlock</button>
+      </form>
+      <div id="gateError" class="error" role="status" aria-live="polite"></div>
+      <p class="smallnote">For invited viewers only.</p>
+    </section>
+
+    <section id="library" class="panel">
+      <div class="toolbar">
+        <div>
+          <div class="eyebrow">Private library</div>
+          <h1>Choose an episode</h1>
+          <p class="library-note">Watch unreleased episodes before their public release.</p>
+        </div>
+        <div class="controls">
+          <input id="search" class="search" type="search" placeholder="Search episodes…" aria-label="Search episodes">
+          <button id="lockBtn" class="btn secondary" type="button">Lock library</button>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Season">
+        <button class="tab active" data-season="1" role="tab" aria-selected="true">Season 1</button>
+        <button class="tab" data-season="2" role="tab" aria-selected="false">Season 2</button>
+      </div>
+      <div class="layout">
+        <section>
+          <div class="playerbox" id="playerbox">
+            <div class="player-placeholder">Select an episode to start watching.</div>
+          </div>
+          <div class="episode-info" id="episodeInfo">
+            <div class="eyebrow">Welcome</div>
+            <h2>The Cousins</h2>
+            <p>Choose an episode from the list.</p>
+          </div>
+          <div class="player-actions">
+            <button class="btn secondary" id="prevBtn" type="button">← Previous</button>
+            <button class="btn secondary" id="reloadBtn" type="button">Reload player</button>
+            <button class="btn secondary" id="nextBtn" type="button">Next →</button>
+          </div>
+        </section>
+        <section>
+          <div id="episodeList" class="list" aria-live="polite"></div>
+          <div id="emptyState" class="empty" hidden>No episodes match that search.</div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer>The Cousins · Private screening room</footer>
+</div>
+
+<script>
+const ACCESS_CODE = "ipadkid";
+
+const episodes = [
+  {season:1, code:"S1E1", title:"iPad Kid", url:"https://drive.google.com/file/d/11Y43rcvnWG9tXGGAq91GNAJJc6d0Tg3q/preview", description:"The iPad kid keeps interrupting Cole and Max’s advertisements."},
+  {season:1, code:"S1E2", title:"Probably Adopted", url:"https://drive.google.com/file/d/15ExoezYMB2hfVMC3PB4PH4h5iYJZewMu/preview", description:"Max's cousins act incredibly disgusting and stupid, while Max begins to believe he was adopted into this insane family."},
+  {season:1, code:"S1E3", title:"Maximum Possibilities AI", url:"https://drive.google.com/file/d/1pDMfozd7EmwPrCq1R2Ljjdfkp1A8PRCS/preview", description:"Cole builds an AI that looks uncannily like Max, and the result is something incredible. His brother and he start to notice weird, uncanny things happening. This philosophical zombie appears to know everything, yet may understand nothing at all."},
+  {season:1, code:"S1E4", title:"When You Try To Make A Movie With 2 Lunatics", url:"https://drive.google.com/file/d/11daZXYshVXIJ0tu3xMvu57DhvKfJm4Ye/preview", description:"Max attempts to make a movie, but chaos occurs when he invites his cousins to do it with him."},
+  {season:1, code:"S1E5", title:"What Not To Do At A Wedding", url:"https://drive.google.com/file/d/1OVHUpCOBpsFsEFFuz4K1t3ZL_BdSufv1/preview", description:"Cole, Leo and Max go to a wedding and cause shenanigans."},
+  {season:1, code:"S1E6", title:"The Stupid Games", url:"https://drive.google.com/file/d/1lTqVUHzasCYb31nDutDyiyLossHKWVVu/preview", description:"The cousins enter a game where they have to fight each other to the death."},
+  {season:2, code:"S2E1", title:"Dawn of iPad Kid", url:"https://drive.google.com/file/d/16Q15VAc4u3SJ00GXiN6ixnp9s4Cba7-V/preview", description:"Leo discovers iPad."},
+  {season:2, code:"S2E2", title:"Toe Muncher", url:"https://drive.google.com/file/d/1Zpfl013uaWhlBm0ua-13k_Ns45dZsgCV/preview", description:"Max finds out his family is just a chain of increasingly insane relatives, and chaos occurs when his doorbell rings."},
+  {season:2, code:"S2E3", title:"Saved", url:"https://drive.google.com/file/d/1NDLmAbTEFC01jSewOl90Z98E6ej54ueW/preview", description:"Max buys a hub and Cole sees what happens when it is plugged into itself. Incredible things happen."},
+];
+
+const gate = document.getElementById("gate");
+const library = document.getElementById("library");
+const codeInput = document.getElementById("codeInput");
+const gateError = document.getElementById("gateError");
+const search = document.getElementById("search");
+const episodeList = document.getElementById("episodeList");
+const emptyState = document.getElementById("emptyState");
+const playerbox = document.getElementById("playerbox");
+const episodeInfo = document.getElementById("episodeInfo");
+let currentSeason = 1;
+let currentEpisodeIndex = 0;
+
+function unlock() {
+  gate.style.display = "none";
+  library.style.display = "block";
+  sessionStorage.setItem("cousinsUnlocked", "yes");
+  renderList();
+}
+function lock() {
+  sessionStorage.removeItem("cousinsUnlocked");
+  library.style.display = "none";
+  gate.style.display = "block";
+  codeInput.value = "";
+  gateError.textContent = "";
+  codeInput.focus();
+}
+document.getElementById("gateForm").addEventListener("submit", event => {
+  event.preventDefault();
+  if (codeInput.value.trim().toLowerCase() === ACCESS_CODE) {
+    unlock();
+  } else {
+    gateError.textContent = "That code didn't work. Try again.";
+    codeInput.select();
+  }
+});
+document.getElementById("lockBtn").addEventListener("click", lock);
+
+function filteredEpisodes() {
+  const query = search.value.trim().toLowerCase();
+  return episodes.filter(ep => ep.season === currentSeason &&
+    `${ep.code} ${ep.title} ${ep.description}`.toLowerCase().includes(query));
+}
+function renderList() {
+  episodeList.replaceChildren();
+  const matches = filteredEpisodes();
+  emptyState.hidden = matches.length !== 0;
+  matches.forEach(ep => {
+    const index = episodes.indexOf(ep);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "episode" + (index === currentEpisodeIndex ? " selected" : "");
+    button.innerHTML = `<span class="ep-code">${ep.code}</span><span class="ep-title"></span>`;
+    button.querySelector(".ep-title").textContent = ep.title;
+    button.addEventListener("click", () => playEpisode(index));
+    episodeList.appendChild(button);
+  });
+}
+function playEpisode(index) {
+  if (index < 0 || index >= episodes.length) return;
+  currentEpisodeIndex = index;
+  const ep = episodes[index];
+  currentSeason = ep.season;
+  document.querySelectorAll(".tab").forEach(tab => {
+    const active = Number(tab.dataset.season) === currentSeason;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", String(active));
+  });
+  playerbox.replaceChildren();
+  const iframe = document.createElement("iframe");
+  iframe.src = ep.url;
+  iframe.title = `${ep.code} — ${ep.title}`;
+  iframe.allow = "autoplay; fullscreen; picture-in-picture";
+  iframe.allowFullscreen = true;
+  playerbox.appendChild(iframe);
+  episodeInfo.innerHTML = `<div class="eyebrow">${ep.code} · Season ${ep.season}</div><h2></h2><p></p>`;
+  episodeInfo.querySelector("h2").textContent = ep.title;
+  episodeInfo.querySelector("p").textContent = ep.description;
+  renderList();
+}
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentSeason = Number(tab.dataset.season);
+    document.querySelectorAll(".tab").forEach(other => {
+      const active = other === tab;
+      other.classList.toggle("active", active);
+      other.setAttribute("aria-selected", String(active));
+    });
+    renderList();
+  });
+});
+search.addEventListener("input", renderList);
+document.getElementById("prevBtn").addEventListener("click", () => playEpisode(currentEpisodeIndex - 1));
+document.getElementById("nextBtn").addEventListener("click", () => playEpisode(currentEpisodeIndex + 1));
+document.getElementById("reloadBtn").addEventListener("click", () => {
+  const ep = episodes[currentEpisodeIndex];
+  const iframe = playerbox.querySelector("iframe");
+  if (iframe) iframe.src = ep.url;
+});
+if (sessionStorage.getItem("cousinsUnlocked") === "yes") unlock();
+</script>
+</body>
+</html>
